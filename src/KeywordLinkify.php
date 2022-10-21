@@ -2,11 +2,11 @@
 
 namespace Chuoke\KeywordLinkify;
 
-use DOMXPath;
-use Exception;
-use DOMElement;
 use DOMDocument;
 use DOMDocumentFragment;
+use DOMElement;
+use DOMXPath;
+use Exception;
 
 class KeywordLinkify
 {
@@ -52,7 +52,7 @@ class KeywordLinkify
     /**
      * Set whether to replace nested, which means whether to replace keywords in keywords
      *
-     * @param  boolean  $nested
+     * @param  bool  $nested
      * @return static
      */
     public function nested($nested = true): static
@@ -110,7 +110,7 @@ class KeywordLinkify
             $domXPath = new DOMXPath($dom);
 
             foreach ($domXPath->query('//*[not(self::img or self::a)]/text()') as $textNode) {
-                if (!trim($textNode->nodeValue)) {
+                if (! trim($textNode->nodeValue)) {
                     continue;
                 }
 
@@ -150,13 +150,13 @@ class KeywordLinkify
             $regexNeedles[] = preg_quote($link['keyword'], '/');
         }
 
-        if (!$searches) {
+        if (! $searches) {
             return null;
         }
 
         $pattern = '/(' . implode('|', $regexNeedles) . ')/ui';
         $fragments = preg_split($pattern, $text, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
-        if (!$fragments) {
+        if (! $fragments) {
             return null;
         }
 
@@ -165,8 +165,9 @@ class KeywordLinkify
         foreach ($fragments as $fragment) {
             $fragmentLower = strtolower($fragment);
 
-            if (!isset($searches[$fragmentLower])) {
+            if (! isset($searches[$fragmentLower])) {
                 $newNodes[] = $dom->createTextNode($fragment);
+
                 continue;
             }
 
@@ -199,7 +200,7 @@ class KeywordLinkify
             }
         }
 
-        if (!$needReplace) {
+        if (! $needReplace) {
             return null;
         }
 
@@ -224,7 +225,7 @@ class KeywordLinkify
 
     public function hasError(): bool
     {
-        return !!$this->exception;
+        return ! ! $this->exception;
     }
 
     public function getException(): Exception|null
