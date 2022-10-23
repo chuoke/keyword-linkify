@@ -37,6 +37,8 @@ The result:
 ```
 ![](./imgs/example-1.png)
 
+As you can see, it won't replace attribute text.
+
 ## Testing
 
 ```bash
