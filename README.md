@@ -35,7 +35,7 @@ The result:
 ```html
 <img class="hero-logo" src="/images/logos/php-logo-white.svg" alt="php" width="240" height="120"><p class="hero-text">A <strong>popular general-purpose scripting language</strong> that is especially suited to web development.<br>Fast, flexible and pragmatic, <a target="blank" href="https://www.php.net/" title="PHP">PHP</a> powers everything from your blog to the most popular websites in the world.</p>
 ```
-[](./imgs/example-1.phg)
+![](./imgs/example-1.png)
 
 ## Testing
 
