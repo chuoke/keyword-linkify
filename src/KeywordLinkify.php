@@ -76,9 +76,11 @@ class KeywordLinkify
 
     public function keywords(array $keywords): static
     {
-        usort($keywords, function ($a, $b) {
-            return mb_strlen($b['keyword']) - mb_strlen($a['keyword']);
-        });
+        if ($this->nested) {
+            usort($keywords, function ($a, $b) {
+                return mb_strlen($b['keyword']) - mb_strlen($a['keyword']);
+            });
+        }
 
         foreach ($keywords as $link) {
             $link['times'] = 0;
@@ -114,8 +116,17 @@ class KeywordLinkify
                     continue;
                 }
 
-                if ($newNode = $this->replaceKeywords($this->replacingKeywords, $textNode->nodeValue, $dom)) {
-                    $textNode->parentNode->replaceChild($newNode, $textNode);
+                if ($newNodes = $this->replaceKeywords($this->keywords, $textNode->nodeValue, $dom)) {
+                    $newFragment = $dom->createDocumentFragment();
+                    foreach ($newNodes as $newNode) {
+                        if (is_string($newNode)) {
+                            $newFragment->appendChild($dom->createTextNode($newNode));
+                        } else {
+                            $newFragment->appendChild($newNode);
+                        }
+                    }
+
+                    $textNode->parentNode->replaceChild($newFragment, $textNode);
                 }
             }
 
@@ -135,9 +146,9 @@ class KeywordLinkify
      * @param  array<keyword, url>  $keywords
      * @param  string  $text
      * @param  DOMDocument  $dom
-     * @return DOMDocumentFragment|null
+     * @return null|array<\DOMNode|string>
      */
-    protected function replaceKeywords($keywords, $text, $dom): DOMDocumentFragment|null
+    protected function replaceKeywords($keywords, $text, $dom): array|null
     {
         $searches = [];
         $regexNeedles = [];
@@ -163,39 +174,48 @@ class KeywordLinkify
         $newNodes = [];
         $needReplace = false;
         foreach ($fragments as $fragment) {
-            $fragmentLower = strtolower($fragment);
+            $fragmentLower = strtolower(trim($fragment));
 
-            if (!isset($searches[$fragmentLower])) {
-                $newNodes[] = $dom->createTextNode($fragment);
+            if (!$fragmentLower || !isset($searches[$fragmentLower])) {
+                $newNodes[] = $fragment;
                 continue;
             }
 
             $searched = $searches[$fragmentLower];
-
             $needReplace = true;
 
-            $child = null;
+            $children = null;
             if ($this->nested) {
                 $childSearches = $searches;
                 unset($childSearches[$fragmentLower]);
-                $child = $this->replaceKeywords($childSearches, $fragment, $dom);
+                $children = $this->replaceKeywords($childSearches, $fragment, $dom);
             }
 
-            $a = $this->makeAElement($dom, [
-                'href' => $searched['url'],
-                'title' => array_key_exists('title', $searched) ? $searched['title'] : $fragment,
-            ]);
-
-            if ($child) {
-                $a->appendChild($child);
-            } else {
-                $a->nodeValue = $fragment;
+            if (!$children) {
+                $children[] = $fragment;
             }
 
-            $newNodes[] = $a;
-            $this->replacingKeywords[$fragmentLower]['times']++;
-            if ($this->times && $this->replacingKeywords[$fragmentLower]['times'] >= $this->times) {
-                unset($this->replacingKeywords[$fragmentLower], $searches[$fragmentLower]);
+            $currentReplaced = false;
+            foreach ($children as $child) {
+                if (is_string($child)) {
+                    $currentReplaced = true;
+                    $a = $this->makeAElement($dom, [
+                        'href' => $searched['url'],
+                        'title' => array_key_exists('title', $searched) ? $searched['title'] : $fragment,
+                    ]);
+                    $a->nodeValue = $child;
+                    $newNodes[] = $a;
+                } else {
+                    $newNodes[] = $child;
+                }
+            }
+
+            if ($currentReplaced) {
+                $this->keywords[$fragmentLower]['times']++;
+            }
+
+            if ($this->times && $this->keywords[$fragmentLower]['times'] >= $this->times) {
+                unset($this->keywords[$fragmentLower], $searches[$fragmentLower]);
             }
         }
 
@@ -203,12 +223,7 @@ class KeywordLinkify
             return null;
         }
 
-        $newFragment = $dom->createDocumentFragment();
-        foreach ($newNodes as $newNode) {
-            $newFragment->appendChild($newNode);
-        }
-
-        return $newFragment;
+        return $newNodes;
     }
 
     protected function makeAElement(DOMDocument $dom, array $attributes = []): DOMElement

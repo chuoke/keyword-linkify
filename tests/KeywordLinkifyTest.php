@@ -116,7 +116,7 @@ it('can repalce nested', function () {
             ]
         ))
         ->toEqual(
-            'KeywordLinkify is a <a target="blank" href="https://packagist.org/packages/chuoke/keyword-linkify" title="PHP package"><a target="blank" href="https://www.php.net/" title="PHP">PHP</a> package</a>.'
+            'KeywordLinkify is a <a target="blank" href="https://www.php.net/" title="PHP">PHP</a><a target="blank" href="https://packagist.org/packages/chuoke/keyword-linkify" title="PHP package"> package</a>.'
         );
 });
 
@@ -154,5 +154,26 @@ it('can change title', function () {
         ))
         ->toEqual(
             '<a target="top" href="https://baike.baidu.com/item/%E6%9D%8E%E7%99%BD/1043" title="点击查看李白详情">李白</a>诗中常将想象、夸张、比喻、拟人等手法综合运用，从而造成神奇异彩、瑰丽动人的意境，这就是李白的浪漫主义诗作给人以豪迈奔放、飘逸若仙的原因所在。乾元二年，李白应友人之邀，再次与被谪贬的贾至泛舟赏月于洞庭之上，发思古之幽情，赋诗抒怀。'
+        );
+});
+
+it('can repalce only in a given order(non-nested)', function () {
+    expect(createKeywordLinkify()
+        ->nonnested()
+        ->replace(
+            'KeywordLinkify is a PHP package.',
+            [
+                [
+                    'keyword' => 'PHP package',
+                    'url' => 'https://packagist.org/packages/chuoke/keyword-linkify',
+                ],
+                [
+                    'keyword' => 'PHP',
+                    'url' => 'https://www.php.net/',
+                ],
+            ]
+        ))
+        ->toEqual(
+            'KeywordLinkify is a <a target="blank" href="https://packagist.org/packages/chuoke/keyword-linkify" title="PHP package">PHP package</a>.'
         );
 });

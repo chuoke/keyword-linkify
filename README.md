@@ -37,6 +37,8 @@ The result:
 ```
 [](./imgs/example-1.phg)
 
+More example see tests.
+
 ## Testing
 
 ```bash
