@@ -92,7 +92,7 @@ it('can repalce Chinese', function () {
                 [
                     'keyword' => '李白',
                     'url' => 'https://baike.baidu.com/item/%E6%9D%8E%E7%99%BD/1043',
-                ]
+                ],
             ]
         ))
         ->toEqual(
@@ -112,7 +112,7 @@ it('can repalce nested', function () {
                 [
                     'keyword' => 'PHP package',
                     'url' => 'https://packagist.org/packages/chuoke/keyword-linkify',
-                ]
+                ],
             ]
         ))
         ->toEqual(
@@ -130,7 +130,7 @@ it('can change target', function () {
                 [
                     'keyword' => '李白',
                     'url' => 'https://baike.baidu.com/item/%E6%9D%8E%E7%99%BD/1043',
-                ]
+                ],
             ]
         ))
         ->toEqual(
@@ -149,7 +149,7 @@ it('can change title', function () {
                     'keyword' => '李白',
                     'url' => 'https://baike.baidu.com/item/%E6%9D%8E%E7%99%BD/1043',
                     'title' => '点击查看李白详情',
-                ]
+                ],
             ]
         ))
         ->toEqual(
