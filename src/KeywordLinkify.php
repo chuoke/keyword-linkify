@@ -3,7 +3,6 @@
 namespace Chuoke\KeywordLinkify;
 
 use DOMDocument;
-use DOMDocumentFragment;
 use DOMElement;
 use DOMXPath;
 use Exception;
@@ -176,8 +175,9 @@ class KeywordLinkify
         foreach ($fragments as $fragment) {
             $fragmentLower = strtolower(trim($fragment));
 
-            if (!$fragmentLower || !isset($searches[$fragmentLower])) {
+            if (! $fragmentLower || ! isset($searches[$fragmentLower])) {
                 $newNodes[] = $fragment;
+
                 continue;
             }
 
@@ -191,7 +191,7 @@ class KeywordLinkify
                 $children = $this->replaceKeywords($childSearches, $fragment, $dom);
             }
 
-            if (!$children) {
+            if (! $children) {
                 $children[] = $fragment;
             }
 
