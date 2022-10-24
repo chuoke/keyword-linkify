@@ -1,7 +1,7 @@
 # Replace keywords in articles with links 替换文章中关键词为链接
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/chuoke/keyword-linkify.svg?style=flat-square)](https://packagist.org/packages/chuoke/keyword-linkify)
-[![Tests](https://github.com/chuoke/keyword-linkify/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/chuoke/keyword-linkify/actions/workflows/run-tests.yml)
+[![Tests](https://github.com/chuoke/keyword-linkify/actions/workflows/run-tests.yml/badge.svg?branch=master)](https://github.com/chuoke/keyword-linkify/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/chuoke/keyword-linkify.svg?style=flat-square)](https://packagist.org/packages/chuoke/keyword-linkify)
 
 ## Installation
